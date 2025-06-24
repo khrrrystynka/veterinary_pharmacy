@@ -1,18 +1,18 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using VetPharmacyApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Додаємо Swagger для OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Додаємо контролери (щоб мати API)
 builder.Services.AddControllers();
+
+builder.Services.AddDbContext<VetPharmacyDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
-// Вмикаємо Swagger UI (без перевірки середовища для тесту)
 app.UseSwagger();
 app.UseSwaggerUI();
 
@@ -20,7 +20,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Простий маршрут на корінь, щоб перевірити запуск
 app.MapGet("/", () => "Вітаю! API VetPharmacy працює.");
 
 app.Run();
