@@ -9,12 +9,10 @@ public class Product
     public int Quantity { get; set; }
     [Column(TypeName = "timestamp without time zone")]
     public DateTime ArrivalDate { get; set; }
-
     [Column(TypeName = "timestamp without time zone")]
     public DateTime ExpiryDate { get; set; }
-
     public bool IsWriteOffAllowed { get; set; }
-    
+
     public int CategoryId { get; set; }
     public Category? Category { get; set; }
 }

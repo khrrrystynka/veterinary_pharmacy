@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VetPharmacyApi.Data;
@@ -11,9 +12,11 @@ using VetPharmacyApi.Data;
 namespace VetPharmacyApi.Migrations
 {
     [DbContext(typeof(VetPharmacyDbContext))]
-    partial class VetPharmacyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250625083431_AddPasswordHashToUsers")]
+    partial class AddPasswordHashToUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
