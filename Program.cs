@@ -89,4 +89,10 @@ app.MapControllers();
 // 👇 Тестова домашня сторінка
 app.MapGet("/", () => "Вітаю! API VetPharmacy працює.");
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<VetPharmacyDbContext>();
+    DbSeeder.Seed(dbContext);
+}
+
 app.Run();
