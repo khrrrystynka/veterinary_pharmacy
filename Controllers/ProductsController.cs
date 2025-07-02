@@ -44,28 +44,47 @@ public class ProductsController : ControllerBase
     }
 
     /// <summary>
-    /// Отримати продукт за ID (доступно ролям Doctor і Admin).
+    /// Отримати всі продукти з фільтрацією, пагінацією та сортуванням за датою додавання (доступно ролям Doctor і Admin).
     /// </summary>
-    /// <param name="id">Ідентифікатор продукту</param>
-    /// <returns>Продукт з категорією</returns>
-    /// <response code="200">Повертає продукт</response>
-    /// <response code="400">Некоректний запит (ModelState не валідний)</response>
-    /// <response code="404">Продукт не знайдений</response>
-    /// <response code="401">Якщо користувач не авторизований</response>
-    [Authorize] // Doctor і Admin
-    [HttpGet("{id}")]
-    [ProducesResponseType(typeof(Product), 200)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(404)]
+    /// <param name="search">Текст для пошуку в назві продукту</param>
+    /// <param name="sortOrder">Порядок сортування за ArrivalDate: asc або desc (за замовчуванням desc)</param>
+    /// <param name="pageNumber">Номер сторінки (за замовчуванням 1)</param>
+    /// <param name="pageSize">Розмір сторінки (за замовчуванням 10)</param>
+    /// <returns>Список продуктів</returns>
+    [Authorize]
+    [HttpGet("filter")]
+    [ProducesResponseType(typeof(IEnumerable<Product>), 200)]
     [ProducesResponseType(401)]
-    public async Task<ActionResult<Product>> GetProduct(int id)
+    public async Task<ActionResult<IEnumerable<Product>>> GetProduct(
+        string? search = null,
+        string? sortOrder = "desc",
+        int pageNumber = 1,
+        int pageSize = 10)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        var product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
-        if (product == null) return NotFound();
-        return product;
+        if (pageNumber < 1) pageNumber = 1;
+        if (pageSize < 1) pageSize = 10;
+    
+        var query = _context.Products
+            .Include(p => p.Category)
+            .AsQueryable();
+    
+        // 🔍 Фільтрація по назві
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            query = query.Where(p => p.Name.ToLower().Contains(search.ToLower()));
+        }
+    
+        // 🔃 Сортування за датою додавання
+        query = sortOrder?.ToLower() == "asc"
+            ? query.OrderBy(p => p.ArrivalDate)
+            : query.OrderByDescending(p => p.ArrivalDate);
+    
+        var products = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    
+        return products;
     }
 
     /// <summary>
