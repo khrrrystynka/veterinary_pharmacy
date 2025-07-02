@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using VetPharmacyApi.Data;
+using VetPharmacyApi.Middleware;
 using VetPharmacyApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -78,6 +79,8 @@ var app = builder.Build();
 // 👇 Swagger
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseMiddleware<VetPharmacyApi.Middleware.GlobalExceptionHandlingMiddleware>();
 
 // 👇 Увімкнути Authentication та Authorization
 app.UseAuthentication();

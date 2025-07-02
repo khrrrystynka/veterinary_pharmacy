@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VetPharmacyApi.Data;
@@ -11,9 +12,11 @@ using VetPharmacyApi.Data;
 namespace VetPharmacyApi.Migrations
 {
     [DbContext(typeof(VetPharmacyDbContext))]
-    partial class VetPharmacyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250702220949_SeedCategories")]
+    partial class SeedCategories
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,6 +67,21 @@ namespace VetPharmacyApi.Migrations
                     b.ToTable("Categories");
 
                     b.HasData(
+                        new
+                        {
+                            Id = 3,
+                            Name = "Parasite Control"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Pain Relief"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Vitamins and Supplements"
+                        },
                         new
                         {
                             Id = 6,
